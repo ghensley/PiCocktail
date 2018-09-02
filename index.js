@@ -20,12 +20,14 @@ const ingredients = {
 	}
 }
 
-const pins [null, null, 16, 22, 23, null]
+const pins = [null, null, null, 16, 22, 21]
 
-const slots = [null, null, "Whiskey", "Gin", "Sweet Vermouth", null]
+const slots = [null, null, null, "Whiskey", "Gin", "Sweet Vermouth"]
 
 for (let i=0; i< pins.length; i++) {
-	gpio.setup(pins[i], gpio.DIR_HIGH, gpioCallback)
+	if(pins[i] != null) {
+		gpio.setup(pins[i], gpio.DIR_HIGH, gpioCallback)
+	}
 }
 
 function gpioCallback(err) {
@@ -94,9 +96,9 @@ app.post("/make", (req, res) => {
 		const ingredientName = ingredient
 		const ingredientAmount = req.body[ingredientName]
 		result.push(`Pouring ${ingredientAmount} oz of ${ingredientName} out of slot ${ingredientSlot}`)
-		gpio.write(slots[ingredientSlot], false)
+		gpio.write(pins[ingredientSlot], false)
 		setTimeout(() => {
-			gpio.write(slots[ingredientSlot], true)
+			gpio.write(pins[ingredientSlot], true)
 		}, ingredientAmount * MULIPLIER)
 	})
 
