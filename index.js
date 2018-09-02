@@ -2,6 +2,8 @@ const express = require("express")
 const bodyParser = require('body-parser')
 const gpio = require('rpi-gpio');
 
+const MULIPLIER = 1500 
+
 const app = express();
 app.use(bodyParser.json());
 
@@ -18,11 +20,13 @@ const ingredients = {
 	}
 }
 
-const pins = [8,10,12,16,18,22]
-//const pins = [14,15,18,23,24,25]
-const slots = ["Whiskey", "Gin", "Sweet Vermouth", null, null, null]
+const pins [null, null, 16, 22, 23, null]
 
-gpio.setup(23, gpio.DIR_HIGH, gpioCallback);
+const slots = [null, null, "Whiskey", "Gin", "Sweet Vermouth", null]
+
+for (let i=0; i< pins.length; i++) {
+	gpio.setup(pins[i], gpio.DIR_HIGH, gpioCallback)
+}
 
 function gpioCallback(err) {
     if (err) throw err;
@@ -62,7 +66,6 @@ app.post("/slot", (req, res) => {
 
 
 app.get('/', (req, res) => {
-	gpio.write(23,false)
 	res.send('Hello World!')
 })
 
@@ -91,6 +94,10 @@ app.post("/make", (req, res) => {
 		const ingredientName = ingredient
 		const ingredientAmount = req.body[ingredientName]
 		result.push(`Pouring ${ingredientAmount} oz of ${ingredientName} out of slot ${ingredientSlot}`)
+		gpio.write(slots[ingredientSlot], false)
+		setTimeout(() => {
+			gpio.write(slots[ingredientSlot], true)
+		}, ingredientAmount * MULIPLIER)
 	})
 
 	res.send(result);
