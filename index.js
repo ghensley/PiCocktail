@@ -22,13 +22,11 @@ const pins = [8,10,12,16,18,22]
 //const pins = [14,15,18,23,24,25]
 const slots = ["Whiskey", "Gin", "Sweet Vermouth", null, null, null]
 
-gpio.setup(pins[0], gpio.DIR_OUT, write);
- 
-write = (err) => {
-    if (err) throw err;
-    gpio.write(pins[0], true);
-}
+gpio.setup(23, gpio.DIR_HIGH, gpioCallback);
 
+function gpioCallback(err) {
+    if (err) throw err;
+}
 
 app.get("/ingredients", (req, res) => {
 	res.send(ingredients);
@@ -64,8 +62,8 @@ app.post("/slot", (req, res) => {
 
 
 app.get('/', (req, res) => {
+	gpio.write(23,false)
 	res.send('Hello World!')
-	write();
 })
 
 app.post("/make", (req, res) => {
