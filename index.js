@@ -2,13 +2,16 @@ const express = require("express")
 const bodyParser = require('body-parser')
 const gpio = require('rpi-gpio');
 
-const MULIPLIER = 1500 
+const MULIPLIER = 3000 
 
 const app = express();
 app.use(bodyParser.json());
 
 const INGREDIENTS = "ingredients";
 const ingredients = {
+	"Campari": {
+		desciption: "Bitter af"
+	},
 	"Whiskey": {
 		description: "Smooth and flavorful"
 	},
@@ -17,12 +20,15 @@ const ingredients = {
 	},
 	"Sweet Vermouth": {
 		"description": "Like wine but more"
+	},
+	"Dry Vermouth": {
+		"description": "Basically white wine"
 	}
 }
 
-const pins = [null, null, null, 16, 22, 21]
+const pins = [null, 7, 11, 16, 22, 21]
 
-const slots = [null, null, null, "Whiskey", "Gin", "Sweet Vermouth"]
+const slots = [null, "Dry Vermouth", "Campari", "Whiskey", "Gin", "Sweet Vermouth"]
 
 for (let i=0; i< pins.length; i++) {
 	if(pins[i] != null) {
