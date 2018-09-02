@@ -1,5 +1,6 @@
 const express = require("express")
 const bodyParser = require('body-parser')
+const gpio = require('rpi-gpio');
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,7 +17,17 @@ const ingredients = {
 		"description": "Like wine but more"
 	}
 }
+
+const pins = [8,10,12,16,18,22]
+//const pins = [14,15,18,23,24,25]
 const slots = ["Whiskey", "Gin", "Sweet Vermouth", null, null, null]
+
+gpio.setup(pins[0], gpio.DIR_OUT, write);
+ 
+write = (err) => {
+    if (err) throw err;
+    gpio.write(pins[0], true);
+}
 
 
 app.get("/ingredients", (req, res) => {
@@ -52,7 +63,10 @@ app.post("/slot", (req, res) => {
 })
 
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => {
+	res.send('Hello World!')
+	write();
+})
 
 app.post("/make", (req, res) => {
 	/*
